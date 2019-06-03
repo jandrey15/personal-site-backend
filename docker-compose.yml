@@ -1,0 +1,40 @@
+version: '3.1'
+
+services:
+
+  ghost:
+    # image: ghost:1-alpine
+    image: ghost:2.22-alpine
+    restart: always
+    ports:
+      - 8080:2368
+    environment:
+      # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: root
+      database__connection__password: andrey15
+      database__connection__database: ghost
+      url: http://docker.test:8080
+    volumes:
+      - ./ghost/blog:/var/lib/ghost/content
+    networks:
+      - app-network
+
+  db:
+    image: mysql:5.7
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: andrey15
+    volumes:
+      - dbghost:/var/lib/mysql 
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
+
+volumes:
+  dbghost:
+  node_modules: 
