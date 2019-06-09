@@ -1,2 +1,3 @@
 ghost/blog/images
 ghost/blog/logs
+.env
