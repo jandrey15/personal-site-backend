@@ -2,24 +2,28 @@ version: '3.3'
 
 services:
   web:
-    # image: jandrey15/johnserrano-web
-    build: ../frontend
+    build:
+      context: ../frontend
+      dockerfile: Dockerfile
+    image: jandrey15/johnserrano-web
     # env_file:
     #   - web-variables.env
+    container_name: web
     restart: always
     networks:
       - app-network
-    ports:
-      - "3000:3000"
+    # ports:
+    #   - "3000:3000"
 
   ghost:
     # image: ghost:1-alpine
     image: ghost:2.22-alpine
+    container_name: ghost
     restart: always
     depends_on:
       - db
     ports:
-      - 8080:2368
+      - "8080:2368"
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
       database__client: mysql
@@ -36,6 +40,7 @@ services:
 
   db:
     image: mysql:5.7
+    container_name: db
     restart: always
     environment:
       MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
@@ -43,6 +48,21 @@ services:
       - dbghost:/var/lib/mysql 
     networks:
       - app-network
+  
+  nginx:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    container_name: nginx
+    restart: always
+    depends_on:
+      - ghost
+      - web
+    networks:
+      - app-network
+    ports:
+      - "80:80"
+      # - "443:443"
 
 networks:
   app-network:
