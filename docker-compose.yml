@@ -11,9 +11,16 @@ services:
     container_name: web
     restart: always
     networks:
-      - app-network
-    # ports:
-    #   - "3000:3000"
+      app-network:
+        aliases:
+          - johnserrano.test
+          # - johnserrano.xyz
+    expose:
+      - "3000"
+    environment:
+      API_URL: "${API_URL}"
+      API_KEY: "${API_KEY}"
+      STATIC_URL: "${STATIC_URL}"
 
   ghost:
     # image: ghost:1-alpine
@@ -22,8 +29,9 @@ services:
     restart: always
     depends_on:
       - db
-    # ports:
-    #   - "8080:2368"
+    expose:
+      - "2368"
+      - "443"
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
       database__client: mysql
@@ -31,12 +39,24 @@ services:
       database__connection__user: "${USER}"
       database__connection__password: "${PASSWORD}"
       database__connection__database: "${DATABASE}"
-      url: http://admin.johnserrano.test
+      url: "${URL}"
       # admin__url: http://admin.johnserrano.test:8080
     volumes:
       - ./ghost/blog:/var/lib/ghost/content
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - admin.johnserrano.test
+          - api.johnserrano.test
+          - static.johnserrano.test
+          # Prod port 80
+          # - admin.johnserrano.xyz
+          # - api.johnserrano.xyz
+          # - static.johnserrano.xyz
+          # # Prod port 443
+          # - admin.johnserrano.xyz:443
+          # - api.johnserrano.xyz:443
+          # - static.johnserrano.xyz:443
 
   db:
     image: mysql:5.7
@@ -53,6 +73,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+    image: jandrey15/johnserrano-nginx
     container_name: nginx
     restart: always
     depends_on:
