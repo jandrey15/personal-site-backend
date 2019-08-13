@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
   web:
@@ -15,8 +15,8 @@ services:
         aliases:
           - johnserrano.test
           # - johnserrano.xyz
-    expose:
-      - "3000"
+    # expose:
+    #   - "3000"
     environment:
       API_URL: "${API_URL}"
       API_KEY: "${API_KEY}"
@@ -39,7 +39,9 @@ services:
       database__connection__user: "${USER}"
       database__connection__password: "${PASSWORD}"
       database__connection__database: "${DATABASE}"
+      NODE_ENV: "${NODE_ENV}"
       url: "${URL}"
+      admin_url: "${URL}"
       # admin__url: http://admin.johnserrano.test:8080
     volumes:
       - ./ghost/blog:/var/lib/ghost/content
@@ -83,6 +85,7 @@ services:
       - app-network
     ports:
       - "80:80"
+      - "2368:2368"
       # - "443:443"
 
 networks:
