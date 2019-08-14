@@ -75,6 +75,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
+      target: "${NODE_ENV}"
     image: jandrey15/johnserrano-nginx
     container_name: nginx
     restart: always
