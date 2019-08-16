@@ -15,12 +15,6 @@ services:
         aliases:
           - johnserrano.test
           - johnserrano.xyz
-    # expose:
-    #   - "3000"
-    environment:
-      API_URL: "${API_URL}"
-      API_KEY: "${API_KEY}"
-      STATIC_URL: "${STATIC_URL}"
 
   ghost:
     # image: ghost:1-alpine
@@ -30,8 +24,7 @@ services:
     depends_on:
       - db
     expose:
-      - "2368"
-      - "443"
+      - 443
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
       database__client: mysql
@@ -39,6 +32,7 @@ services:
       database__connection__user: "${USER}"
       database__connection__password: "${PASSWORD}"
       database__connection__database: "${DATABASE}"
+      server__host: ghost
       NODE_ENV: "${NODE_ENV}"
       url: "${URL}"
       admin_url: "${URL}"
@@ -46,19 +40,7 @@ services:
     volumes:
       - ./ghost/blog:/var/lib/ghost/content
     networks:
-      app-network:
-        aliases:
-          - admin.johnserrano.test
-          - api.johnserrano.test
-          - static.johnserrano.test
-          # Prod port 80
-          - admin.johnserrano.xyz
-          - api.johnserrano.xyz
-          - static.johnserrano.xyz
-          # # Prod port 443
-          - admin.johnserrano.xyz:443
-          - api.johnserrano.xyz:443
-          - static.johnserrano.xyz:443
+      - app-network
 
   db:
     image: mysql:5.7
@@ -83,11 +65,22 @@ services:
       - ghost
       - web
     networks:
-      - app-network
+      app-network:
+        aliases:
+          - admin.johnserrano.test
+          - api.johnserrano.test
+          - static.johnserrano.test
+          # Prod port 80
+          - admin.johnserrano.xyz
+          - api.johnserrano.xyz
+          - static.johnserrano.xyz
+          # # Prod port 443
+          - admin.johnserrano.xyz:443
+          - api.johnserrano.xyz:443
+          - static.johnserrano.xyz:443
     ports:
-      - "80:80"
-      - "2368:2368"
-      # - "443:443"
+      - 80:80
+      - 443:443
 
 networks:
   app-network:
