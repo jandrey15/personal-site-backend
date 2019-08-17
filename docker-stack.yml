@@ -1,0 +1,108 @@
+version: '3.4'
+
+services:
+  web:
+    image: jandrey15/johnserrano-web
+    networks:
+      app-network:
+        aliases:
+          - johnserrano.test
+          - johnserrano.xyz
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 2
+      restart_policy:
+        condition: on-failure
+
+  ghost:
+    # image: ghost:1-alpine
+    image: ghost:2.22-alpine
+    depends_on:
+      - db
+    expose:
+      - 443
+    environment:
+      # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
+      # Las env deben ser cargadas con export USER=ja a la maquina para docker swarm
+      database__client: mysql
+      database__connection__host: db
+      database__connection__user: "${USER}"
+      database__connection__password: "${PASSWORD}"
+      database__connection__database: "${DATABASE}"
+      server__host: ghost
+      NODE_ENV: "${NODE_ENV}"
+      url: "${URL}"
+      admin_url: "${URL}"
+      # admin__url: http://admin.johnserrano.test:8080
+    volumes:
+      - ./ghost/blog:/var/lib/ghost/content
+    networks:
+      - app-network
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  db:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "${MYSQL_ROOT_PASSWORD}"
+    volumes:
+      - dbghost:/var/lib/mysql 
+    networks:
+      - app-network    
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+  
+  nginx:
+    image: jandrey15/johnserrano-nginx
+    restart: always
+    depends_on:
+      - ghost
+      - web
+    networks:
+      app-network:
+        aliases:
+          - admin.johnserrano.test
+          - api.johnserrano.test
+          - static.johnserrano.test
+          # Prod port 80
+          - admin.johnserrano.xyz
+          - api.johnserrano.xyz
+          - static.johnserrano.xyz
+          # # Prod port 443
+          - admin.johnserrano.xyz:443
+          - api.johnserrano.xyz:443
+          - static.johnserrano.xyz:443
+    ports:
+      - 80:80
+      - 443:443
+    deploy:
+      replicas: 1
+      update_config:
+        parallelism: 2
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+
+  visualizer:
+    image: manomarks/visualizer
+    ports:
+      - 8080:8080
+    stop_grace_period: 1m30s
+    volumes:
+      - "/var/run/docker.sock:/var/run/docker.sock"
+    deploy:
+      placement:
+        constraints: [node.role == manager]
+
+networks:
+  app-network:
+
+volumes:
+  dbghost:
