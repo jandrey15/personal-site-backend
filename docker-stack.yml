@@ -24,13 +24,12 @@ services:
       - 443
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
-      # Las env deben ser cargadas con export USER=ja a la maquina para docker swarm
+      # Las env deben ser cargadas source .env.stack a la maquina para docker swarm
       database__client: mysql
       database__connection__host: db
       database__connection__user: "${USER}"
       database__connection__password: "${PASSWORD}"
       database__connection__database: "${DATABASE}"
-      server__host: ghost
       NODE_ENV: "${NODE_ENV}"
       url: "${URL}"
       admin_url: "${URL}"
@@ -91,12 +90,17 @@ services:
         condition: on-failure
 
   visualizer:
-    image: manomarks/visualizer
-    ports:
-      - 8080:8080
+    image: dockersamples/visualizer
+    # ports:
+    #   - 8080:8080
+    expose:
+      - 8080
+      - 443
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
+    networks:
+      - app-network
     deploy:
       placement:
         constraints: [node.role == manager]
