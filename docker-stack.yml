@@ -89,7 +89,7 @@ services:
       restart_policy:
         condition: on-failure
 
-  visualizer:
+  viz:
     image: dockersamples/visualizer
     # ports:
     #   - 8080:8080
