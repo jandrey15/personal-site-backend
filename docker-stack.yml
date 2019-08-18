@@ -74,6 +74,8 @@ services:
           - admin.johnserrano.xyz
           - api.johnserrano.xyz
           - static.johnserrano.xyz
+          - blog.johnserrano.xyz
+          - viz.johnserrano.xyz
           # # Prod port 443
           - admin.johnserrano.xyz:443
           - api.johnserrano.xyz:443
@@ -93,17 +95,14 @@ services:
     image: dockersamples/visualizer
     # ports:
     #   - 8080:8080
-    expose:
-      - 8080
-      - 443
     stop_grace_period: 1m30s
     volumes:
       - "/var/run/docker.sock:/var/run/docker.sock"
-    networks:
-      - app-network
     deploy:
       placement:
         constraints: [node.role == manager]
+    networks:
+      - app-network 
 
 networks:
   app-network:
