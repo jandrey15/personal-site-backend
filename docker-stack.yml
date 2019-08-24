@@ -109,16 +109,16 @@ services:
     networks:
       - app-network
 
-  certbot:
-    image: certbot/certbot
-    container_name: certbot
-    volumes:
-      - certbot-etc:/etc/letsencrypt
-      - certbot-var:/var/lib/letsencrypt
-      - web-root:/var/www/html
-    depends_on:
-      - nginx
-    command: certonly --webroot --webroot-path=/var/www/html --email web@johnserrano.co --agree-tos --no-eff-email --staging -d johnserrano.xyz  -d www.johnserrano.xyz
+  # certbot:
+  #   image: certbot/certbot
+  #   container_name: certbot
+  #   volumes:
+  #     - certbot-etc:/etc/letsencrypt
+  #     - certbot-var:/var/lib/letsencrypt
+  #     - web-root:/var/www/html
+  #   depends_on:
+  #     - nginx
+  #   command: certonly --webroot --webroot-path=/var/www/html --email web@johnserrano.co --agree-tos --no-eff-email --staging -d johnserrano.xyz  -d www.johnserrano.xyz
     # cambiar --staging por --force-renewal despues de comprobar que todo esta ok. 
 
 networks:

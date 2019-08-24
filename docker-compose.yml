@@ -1,4 +1,4 @@
-version: '3.3'
+version: '3.4'
 
 services:
   web:
@@ -14,7 +14,7 @@ services:
       app-network:
         aliases:
           - johnserrano.test
-          - johnserrano.xyz
+          - johnandrey.xyz
 
   ghost:
     # image: ghost:1-alpine
@@ -57,7 +57,7 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-      # target: "${NODE_ENV}"
+      target: "${NODE_ENV}"
     image: jandrey15/johnserrano-nginx:test
     container_name: nginx
     restart: always
@@ -71,14 +71,14 @@ services:
           - api.johnserrano.test
           - static.johnserrano.test
           # Prod port 80
-          - admin.johnserrano.xyz
-          - api.johnserrano.xyz
-          - static.johnserrano.xyz
-          - blog.johnserrano.xyz
+          - admin.johnandrey.xyz
+          - api.johnandrey.xyz
+          - static.johnandrey.xyz
+          - blog.johnandrey.xyz
           # # Prod port 443
-          - admin.johnserrano.xyz:443
-          - api.johnserrano.xyz:443
-          - static.johnserrano.xyz:443
+          - admin.johnandrey.xyz:443
+          - api.johnandrey.xyz:443
+          - static.johnandrey.xyz:443
     ports:
       - 80:80
       - 443:443
