@@ -23,8 +23,6 @@ services:
     restart: always
     depends_on:
       - db
-    expose:
-      - 443
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
       database__client: mysql

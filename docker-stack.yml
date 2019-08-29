@@ -20,8 +20,6 @@ services:
     image: ghost:2.22-alpine
     depends_on:
       - db
-    expose:
-      - 443
     environment:
       # see https://docs.ghost.org/docs/config#section-running-ghost-with-config-env-variables
       # Las env deben ser cargadas source .env.stack a la maquina para docker swarm
@@ -84,7 +82,7 @@ services:
       - 80:80
       - 443:443
     deploy:
-      replicas: 1
+      replicas: 2
       update_config:
         parallelism: 2
         delay: 10s
