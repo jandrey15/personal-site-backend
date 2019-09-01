@@ -1,4 +1,4 @@
-version: '3.4'
+version: '3.3'
 
 services:
   web:
@@ -55,8 +55,8 @@ services:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-      target: "${NODE_ENV}"
-    image: jandrey15/johnserrano-nginx:test
+      # target: "${NODE_ENV}"
+    image: jandrey15/johnserrano-nginx
     container_name: nginx
     restart: always
     depends_on:
@@ -73,10 +73,17 @@ services:
           - api.johnandrey.xyz
           - static.johnandrey.xyz
           - blog.johnandrey.xyz
+          - admin.johnserrano.co
+          - api.johnserrano.co
+          - static.johnserrano.co
+          - blog.johnserrano.co
           # # Prod port 443
           - admin.johnandrey.xyz:443
           - api.johnandrey.xyz:443
           - static.johnandrey.xyz:443
+          - admin.johnserrano.co:443
+          - api.johnserrano.co:443
+          - static.johnserrano.co:443
     ports:
       - 80:80
       - 443:443
