@@ -1,21 +1,6 @@
 version: '3.3'
 
 services:
-  web:
-    build:
-      context: ../frontend
-      dockerfile: Dockerfile
-    image: jandrey15/johnserrano-web
-    # env_file:
-    #   - web-variables.env
-    container_name: web
-    restart: always
-    networks:
-      app-network:
-        aliases:
-          - johnserrano.test
-          - johnandrey.xyz
-
   ghost:
     # image: ghost:1-alpine
     image: ghost:2.22-alpine
@@ -56,12 +41,11 @@ services:
       context: ./nginx
       dockerfile: Dockerfile
       # target: "${NODE_ENV}"
-    image: jandrey15/johnserrano-nginx
+    image: jandrey15/johnserrano-nginx:v2
     container_name: nginx
     restart: always
     depends_on:
       - ghost
-      - web
     networks:
       app-network:
         aliases:
